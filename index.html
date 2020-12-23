@@ -20,6 +20,7 @@
         <button disabled class="cant-afford buy-btn" id="buy-grill">Buy Grill ($15)</button>
         <button disabled class="cant-afford buy-btn" id="buy-chef">Buy Chef ($30)</button>
         <button disabled class="cant-afford buy-btn" id="buy-super-chef">Buy Super Chef ($50)</button>
+        <button disabled class="cant-afford buy-btn" id="sell-chef">Sell Chef ($20)</button>
     </div>
     <div class="modal">
         <div id="modal-content" class="modal-content">
@@ -164,6 +165,12 @@
                 disableButton(document.getElementById("play-button"));
                 continueGame();
                 enableButton(document.getElementById("pause-button"));
+            }
+            document.getElementById("sell-chef").onclick = () => {
+                console.log('hiii');
+                if(kitchen.staff.chefs.length > 1){
+                    kitchen.staff.sellChef();
+                }
             }
         })();
 
