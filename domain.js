@@ -213,14 +213,8 @@ class SuperChef {
 
     drawHat() {
         const ctx = this.ctx;
-        ctx.beginPath();
-        ctx.arc(this.coordinate.x, this.coordinate.y, 15, 0, 2 * Math.PI, false);
-        ctx.closePath();
-        ctx.fillStyle = 'blue';
-        ctx.fill();
-        ctx.lineWidth = 1;
-        ctx.strokeStyle = 'black';
-        ctx.stroke();
+        var img = document.getElementById("super-chef");
+        ctx.drawImage(img, 0, 0, 30, 38, this.coordinate.x, this.coordinate.y, 30, 38);       
     }
 
     move() {
