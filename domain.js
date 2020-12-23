@@ -189,6 +189,10 @@ class Chef {
             return Math.sqrt(Math.pow(point1 - point2, 2));
         }
     }
+
+    isNormalChef(){
+        return false;
+    }
 }
 
 class SuperChef {
@@ -214,7 +218,7 @@ class SuperChef {
     drawHat() {
         const ctx = this.ctx;
         var img = document.getElementById("super-chef");
-        ctx.drawImage(img, 0, 0, 30, 38, this.coordinate.x, this.coordinate.y, 30, 38);       
+        ctx.drawImage(img, this.coordinate.x, this.coordinate.y, 30, 38);   
     }
 
     move() {
@@ -372,6 +376,10 @@ class SuperChef {
             return Math.sqrt(Math.pow(point1 - point2, 2));
         }
     }
+
+    isNormalChef(){
+        return false;
+    }
 }
 
 class Orders {
@@ -503,7 +511,7 @@ class Grill {
 }
 
 class Store {
-    constructor(ctx) {
+    constructor(ctx, kitchen) {
         this.ctx = ctx;
         this.coordinate = new Coordinate(50, 400);
         this.width = 900;
@@ -513,6 +521,8 @@ class Store {
         this.grillPrice = 15;
         this.chefPrice = 30;
         this.superChefPrice = 50;
+        this.chefValue = 20;
+        this.kitchen = kitchen;
         this.updateStore();
     }
 
@@ -525,6 +535,11 @@ class Store {
 
     buyItem(price) {
         this.money -= price;
+        this.updateStore();
+    }
+
+    sellItem(value) {
+        this.money += value;
         this.updateStore();
     }
 
@@ -555,6 +570,13 @@ class Store {
             disableButton(button);
         }
 
+        var button = document.getElementById("sell-chef");
+        if (this.kitchen.staff.chefs.length > 1) {
+            enableButton(button);
+        } else {
+            disableButton(button);
+        }
+
         function enableButton(button) {
             button.classList.remove('disabled');
             button.disabled = false;
@@ -571,8 +593,8 @@ class Kitchen {
         this.ctx = ctx;
         this.orders = new Orders(ctx, new Coordinate(50, 300));
         this.grills = [ new Grill(this.ctx, new Coordinate(50, 20), 0) ];
-        this.store = new Store(ctx);
         this.staff = new Staff(ctx, this);
+        this.store = new Store(ctx, this);
     }
 
     addGrill() {
@@ -617,6 +639,17 @@ class Staff {
         this.chefs.push(new Chef(this.ctx, new Coordinate(50, 200), this.kitchen));
     }
 
+    sellChef() {
+        var chefToSell = this.chefs.findIndex(x => x.isNormalChef);
+        if(chefToSell !== undefined){
+            var kitchen = this.kitchen;
+            let addedValue = this.chefs[chefToSell].shouldHeadToOrder ? 5 : 0;
+            kitchen.store.sellItem(kitchen.store.chefValue + addedValue);
+            this.chefs.splice(chefToSell, 1);
+        }
+        
+    }
+
     addSuperChef() {
         this.chefs.push(new SuperChef(this.ctx, new Coordinate(20, 200), this.kitchen));
     }
@@ -627,5 +660,9 @@ class Staff {
 
     superChefCount() {
         return this.chefs.filter(x => x.constructor.name == "SuperChef").length;
+    }
+
+    normalChefCount(){
+        return this.chefs.filter(x => x.constructor.name = "Chef").length;
     }
 }
